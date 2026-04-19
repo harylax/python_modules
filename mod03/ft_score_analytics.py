@@ -1,7 +1,7 @@
 import sys
 
 
-def ft_score_analytics():
+def ft_score_analytics() -> None:
     print("=== Player Score Analytics ===")
     scores = []
     for argument in sys.argv[1:]:

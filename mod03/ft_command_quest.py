@@ -1,7 +1,7 @@
 import sys
 
 
-def ft_command_quest():
+def ft_command_quest() -> None:
     print("=== Command quest ===")
     total_arguments = len(sys.argv)
     if total_arguments == 1:
