@@ -15,7 +15,14 @@ def list_achievements() -> list[str]:
         'Collector Supreme',
         'Untouchable',
         'Sharp Mind',
-        'Boss Slayer'
+        'Boss Slayer',
+        'Natural Leader',
+        'Sword Master',
+        'Hidden Path Finder',
+        'Ultimate Builder',
+        'Dungeon Conqueror',
+        'Legendary Hero',
+        'Resource Master'
         ]
 
 
