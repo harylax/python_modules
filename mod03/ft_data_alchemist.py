@@ -27,4 +27,8 @@ def game_data_alchemist() -> None:
     print(f"High scores: {high_scores}")
 
 
-game_data_alchemist()
+if __name__ == "__main__":
+    try:
+        game_data_alchemist()
+    except Exception as err:
+        print(f"Error: {err}")
