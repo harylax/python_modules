@@ -15,12 +15,12 @@ def ft_score_analytics() -> None:
         if program_name.startswith("./"):
             print(
                 f"No scores provided. Usage: "
-                f"{sys.argv[0]} <score1> <score2> ..."
+                f"{program_name} <score1> <score2> ..."
                 )
         else:
             print(
                 f"No scores provided. Usage: python3 "
-                f"{sys.argv[0]} <score1> <score2> ..."
+                f"{program_name} <score1> <score2> ..."
                 )
     else:
         print(f"Scores processed: {scores}")

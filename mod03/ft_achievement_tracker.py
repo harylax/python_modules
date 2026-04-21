@@ -71,7 +71,6 @@ def achievement_tracker_system() -> None:
         print(f"Only {current} has: {current_achievements}")
     print()
 
-    missing = set()
     for player in players:
         player_achievements = players[player]
         missing = all_achievements.difference(player_achievements)

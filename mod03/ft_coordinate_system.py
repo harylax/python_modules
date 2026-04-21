@@ -33,9 +33,9 @@ def compute_distance(
         set_2: tuple[float, float, float]
         ) -> float:
     return math.sqrt(
-            (set_1[0] - set_2[0]) ** 2
-            + (set_1[1] - set_2[1]) ** 2
-            + (set_1[2] - set_2[2]) ** 2
+            (set_2[0] - set_1[0]) ** 2
+            + (set_2[1] - set_1[1]) ** 2
+            + (set_2[2] - set_1[2]) ** 2
             )
 
 

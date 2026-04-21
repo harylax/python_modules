@@ -21,6 +21,18 @@ def parse_input() -> dict[str, int]:
 def inventory_system_analysis() -> None:
     print("=== Inventory System Analysis ===")
     inventory = parse_input()
+    if not inventory:
+        if sys.argv[0].startswith("./"):
+            print(
+                f"No inventory provided. Usage: "
+                f"{sys.argv[0]} <item_name>:<quantity> ..."
+                )
+        else:
+            print(
+                f"No inventory provided. Usage: python3 "
+                f"{sys.argv[0]} <item_name>:<quantity> ..."
+                )
+        return
     print(f"Got inventory: {inventory}")
     print(f"Item list: {list(inventory.keys())}")
     print(

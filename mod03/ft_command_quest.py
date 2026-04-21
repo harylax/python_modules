@@ -2,12 +2,14 @@ import sys
 
 
 def ft_command_quest() -> None:
-    print("=== Command quest ===")
+    print("=== Command Quest ===")
+    program_name = sys.argv[0]
+    print(f"Program name: {program_name}")
     total_arguments = len(sys.argv)
-    if total_arguments == 1:
+    arguments_received = total_arguments - 1
+    if arguments_received == 0:
         print("No arguments provided!")
     else:
-        arguments_received = total_arguments - 1
         print(f"Arguments received: {arguments_received}")
         arguments = sys.argv[1:]
         index = 1
