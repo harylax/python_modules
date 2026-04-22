@@ -39,23 +39,34 @@ def inventory_system_analysis() -> None:
         f"Total quantity of the {len(inventory)} items: "
         f"{sum(inventory.values())}"
         )
+
     for item in inventory:
         percent = (inventory[item] / sum(inventory.values())) * 100
         print(f"Item {item} represents {round(percent, 1)}%")
+
+    most = None
+    for value in inventory.values():
+        if most is None or value > most:
+            most = value
     for item in inventory:
-        if inventory[item] == max(inventory.values()):
+        if inventory[item] == most:
             print(
                 f"Item most abundant: {item} "
                 f"with quantity {inventory[item]}"
                 )
             break
+    least = None
+    for value in inventory.values():
+        if least is None or value < least:
+            least = value
     for item in inventory:
-        if inventory[item] == min(inventory.values()):
+        if inventory[item] == least:
             print(
                 f"Item least abundant: {item} "
                 f"with quantity {inventory[item]}"
                 )
             break
+
     inventory.update({'magic_item': 1})
     print(f"Updated inventory: {inventory}")
 

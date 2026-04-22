@@ -44,36 +44,28 @@ def achievement_tracker_system() -> None:
         print(f"Player '{player}': {players[player]}")
     print()
 
-    print("All distinct achievements: ", end="")
-    all_achievements: set[str] = set()
+    all_achievements = players['Alice']
     for player in players:
-        player_achievements = players[player]
-        all_achievements = all_achievements.union(player_achievements)
-    print(all_achievements)
+        all_achievements = all_achievements.union(players[player])
+    print(f"All distinct achievements: {all_achievements}")
     print()
 
-    print("Common achievements: ", end="")
     common = players['Alice']
     for player in players:
-        player_achievements = players[player]
-        common = common.intersection(player_achievements)
-    print(common)
+        common = common.intersection(players[player])
+    print(f"Common achievements: {common}")
     print()
 
     for current in players:
-        current_achievements = players[current]
+        unique = players[current]
         for other in players:
-            if current != other:
-                other_achievements = players[other]
-                current_achievements = current_achievements.difference(
-                    other_achievements
-                    )
-        print(f"Only {current} has: {current_achievements}")
+            if other != current:
+                unique = unique.difference(players[other])
+        print(f"Only {current} has: {unique}")
     print()
 
     for player in players:
-        player_achievements = players[player]
-        missing = all_achievements.difference(player_achievements)
+        missing = all_achievements.difference(players[player])
         print(f"{player} is missing: {missing}")
 
 
