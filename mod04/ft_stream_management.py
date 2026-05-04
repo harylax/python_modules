@@ -7,59 +7,86 @@ def archive_recovery() -> None:
         return
     print("=== Cyber Archives Recovery & Preservation ===")
     print(f"Accessing file '{sys.argv[1]}'")
+    file = None
     try:
-        fd = open(sys.argv[1])
-        content = fd.read()
-        fd.close()
+        file = open(sys.argv[1])
+        content = file.read().strip()
+        file.close()
         print("---\n")
         print(content)
         print("\n---")
-        print(f"File '{sys.argv[1]}' closed.")
     except OSError as err:
         print(
             f"[STDERR] Error opening file '{sys.argv[1]}': {err}",
             file=sys.stderr
             )
+    except Exception as err:
+        print(f"[STDERR] Unexpected error: {err}", file=sys.stderr)
+    finally:
+        if file is not None:
+            file.close()
+            print(f"File '{sys.argv[1]}' closed.")
 
 
 def archive_creation() -> None:
     if len(sys.argv) < 2:
         return
-    print("Transform data:")
+    file = None
     try:
-        fd = open(sys.argv[1])
-        content = fd.read()
-        fd.close()
-    except OSError as err:
-        print(f"[STDERR] Unexpected error: {err}", file=sys.stderr)
+        file = open(sys.argv[1])
+        content = file.read().strip()
+        file.close()
+    except OSError:
         return
+    except Exception:
+        return
+    print("\nTransform data:")
     content = content.replace('\n', '#\n')
     if not content.endswith('#'):
         content += '#'
     print("---\n")
     print(content)
     print("\n---")
-    print("Enter new file name (or empty): ", end="", file=sys.stdout)
-    sys.stdout.flush()
-    new_file = sys.stdin.readline()
-    new_file = new_file.rstrip('\n')
-    if not new_file:
+    try:
+        print(
+            "Enter new file name (or empty): ",
+            end="",
+            file=sys.stdout
+            )
+        sys.stdout.flush()
+        file_name = sys.stdin.readline().strip()
+    except KeyboardInterrupt:
+        print("\n[STDERR] Program interrupted", file=sys.stderr)
+        return
+    except EOFError:
+        print("\n[STDERR] Not saving data.", file=sys.stderr)
+        return
+    if not file_name:
         print("Not saving data.")
         return
+    new_file = None
     try:
-        new_fd = open(new_file, "w")
-        new_fd.write(content)
-        new_fd.close()
-        print(f"Saving data to '{new_file}'")
-        print(f"Data saved in file '{new_file}'.")
+        new_file = open(file_name, "w")
+        new_file.write(content)
+        print(f"Saving data to '{file_name}'")
+        print(f"Data saved in file '{file_name}'.")
     except OSError as err:
-        print(f"[STDERR] Error opening file '{new_file}': {err}")
+        print(
+            f"[STDERR] Error opening file '{file_name}': {err}",
+            file=sys.stderr
+            )
+    except Exception as err:
+        print(f"[STDERR] Unexpected error: {err}", file=sys.stderr)
+    finally:
+        if new_file is not None:
+            new_file.close()
+        if file is not None:
+            file.close()
 
 
 if __name__ == "__main__":
     try:
         archive_recovery()
-        print()
         archive_creation()
-    except BaseException as err:
+    except Exception as err:
         print(f"[STDERR] Unexpected error: {err}", file=sys.stderr)
