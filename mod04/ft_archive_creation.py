@@ -1,10 +1,10 @@
 import sys
 
 
-def archive_recovery() -> None:
+def archive_recovery() -> str | None:
     if len(sys.argv) < 2:
         print(f"Usage: {sys.argv[0]} <file>")
-        return
+        return None
     print("=== Cyber Archives Recovery & Preservation ===")
     print(f"Accessing file '{sys.argv[1]}'")
     file = None
@@ -15,10 +15,13 @@ def archive_recovery() -> None:
         print("---\n")
         print(content)
         print("\n---")
+        return content
     except OSError as err:
         print(f"Error opening file '{sys.argv[1]}': {err}")
+        return None
     except Exception as err:
         print(f"Unexpected error: {err}")
+        return None
     finally:
         if file is not None:
             file.close()
@@ -26,16 +29,8 @@ def archive_recovery() -> None:
 
 
 def archive_creation() -> None:
-    if len(sys.argv) < 2:
-        return
-    file = None
-    try:
-        file = open(sys.argv[1])
-        content = file.read().strip()
-        file.close()
-    except OSError:
-        return
-    except Exception:
+    content = archive_recovery()
+    if content is None:
         return
     print("\nTransform data:")
     content = content.replace('\n', '#\n')
@@ -63,18 +58,19 @@ def archive_creation() -> None:
         print(f"Data saved in file '{file_name}'.")
     except OSError as err:
         print(f"Error opening file '{file_name}': {err}")
+        print("Data not saved.")
+        return
     except Exception as err:
         print(f"Unexpected error: {err}")
+        print("Data not saved.")
+        return
     finally:
         if new_file is not None:
             new_file.close()
-        if file is not None:
-            file.close()
 
 
 if __name__ == "__main__":
     try:
-        archive_recovery()
         archive_creation()
     except Exception as err:
         print(f"Unexpected error: {err}")
