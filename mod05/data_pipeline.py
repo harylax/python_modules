@@ -81,6 +81,26 @@ class LogProcessor(DataProcessor):
             self._storage.append(f"{data['log_level']}: {data['log_message']}")
 
 
+class ExportPlugin(typing.Protocol):
+    def process_output(self, data: list[tuple[int, str]]) -> None:
+        pass
+
+
+class CSVExportPlugin(ExportPlugin):
+    def process_output(self, data: list[tuple[int, str]]) -> None:
+        print("CSV Output:")
+        print(f"{','.join(d[1] for d in data)}")
+
+
+class JSONExportPlugin(ExportPlugin):
+    def process_output(self, data: list[tuple[int, str]]) -> None:
+        print("JSON Output:")
+        items = []
+        for rank, value in data:
+            items.append(f'"item_{rank}": "{value}"')
+        print("{" + ", ".join(items) + "}")
+
+
 class DataStream:
     def __init__(self) -> None:
         self._processors: list[DataProcessor] = []
@@ -129,6 +149,19 @@ class DataStream:
                 f"remaining {remaining} on processor"
                 )
 
+    def output_pipeline(self, nb: int, plugin: ExportPlugin) -> None:
+        print(
+            f"Send {nb} processed data from each processor to a "
+            f"{plugin.__class__.__name__.replace('ExportPlugin', ' plugin')}:"
+            )
+        for processor in self._processors:
+            extracted = []
+            for _ in range(nb):
+                if not processor._storage:
+                    break
+                extracted.append(processor.output())
+            plugin.process_output(extracted)
+
 
 def consume_elements(proc: DataProcessor, nb: int) -> None:
     for _ in range(nb):
@@ -136,19 +169,21 @@ def consume_elements(proc: DataProcessor, nb: int) -> None:
 
 
 def main() -> None:
-    print("=== Code Nexus - Data Stream ===")
+    print("=== Code Nexus - Data Pipeline ===")
 
-    print("\nInitialize Data Stream...")
+    print("\nInitialize Data Stream...\n")
     np = NumericProcessor()
     tp = TextProcessor()
     lp = LogProcessor()
     ds = DataStream()
     ds.print_processors_stats()
 
-    print("\nRegistering Numeric Processor")
+    print("\nRegistering Processors")
     ds.register_processor(np)
+    ds.register_processor(tp)
+    ds.register_processor(lp)
 
-    stream = [
+    stream_1 = [
         'Hello world',
         [3.14, -1, 2.71],
         [
@@ -165,24 +200,47 @@ def main() -> None:
         ['Hi', 'five']
         ]
 
-    print(f"\nSend first batch of data on stream: {stream}")
-    ds.process_stream(stream)
+    print(f"\nSend first batch of data on stream: {stream_1}\n")
+    ds.process_stream(stream_1)
+    ds.print_processors_stats()
+    print()
+
+    csv = CSVExportPlugin()
+    ds.output_pipeline(3, csv)
+    print()
+
     ds.print_processors_stats()
 
-    print("\nRegistering other data processors")
-    ds.register_processor(tp)
-    ds.register_processor(lp)
-    print("Send the same batch again")
-    ds.process_stream(stream)
-    ds.print_processors_stats()
+    stream_2 = [
+        21,
+        [
+            'I love AI',
+            'LLMs are wonderful',
+            'Stay healthy'
+        ],
+        [
+            {
+                'log_level': 'ERROR',
+                'log_message': '500 server crash'
+            },
+            {
+                'log_level': 'NOTICE',
+                'log_message': 'Certificate expires in 10 days'
+            }
+        ],
+        [32, 42, 64, 84, 128, 168],
+        'World hello'
+    ]
+    print(f"\nSend another batch of data: {stream_2}\n")
+    ds.process_stream(stream_2)
 
-    print(
-        "\nConsume some elements from the data processors: "
-        "Numeric 3, Text 2, Log 1"
-        )
-    consume_elements(np, 3)
-    consume_elements(tp, 2)
-    consume_elements(lp, 1)
+    ds.print_processors_stats()
+    print()
+
+    jsone = JSONExportPlugin()
+    ds.output_pipeline(5, jsone)
+    print()
+
     ds.print_processors_stats()
 
 
