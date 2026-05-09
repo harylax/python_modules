@@ -86,8 +86,9 @@ def test_validate(proc: DataProcessor, data: typing.Any) -> None:
 
 
 def test_ingest(proc: DataProcessor, data: typing.Any) -> None:
-    type_global = str(type(data)).split(' ')
-    type_name = type_global[1].strip("'>")
+    # type_global = str(type(data)).split(' ')
+    # type_name = type_global[1].strip("'>")
+    type_name = str(type(data).__name__)
     if type_name == 'str':
         type_name = 'string'
     if type_name == 'int':
