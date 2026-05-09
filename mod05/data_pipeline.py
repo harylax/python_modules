@@ -95,10 +95,14 @@ class CSVExportPlugin(ExportPlugin):
 class JSONExportPlugin(ExportPlugin):
     def process_output(self, data: list[tuple[int, str]]) -> None:
         print("JSON Output:")
-        items = {}
+        # items = {}
+        # for rank, value in data:
+        #     items.update({f"item_{rank}": value})
+        # print(items)
+        items = []
         for rank, value in data:
-            items.update({f"item_{rank}": value})
-        print(items)
+            items.append(f'"item_{rank}": "{value}"')
+        print("{" + ", ".join(items) + "}")
 
 
 class DataStream:
