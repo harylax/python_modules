@@ -37,8 +37,7 @@ def archive_creation() -> None:
         return
     print("\nTransform data:")
     content = content.replace('\n', '#\n')
-    if not content.endswith('#'):
-        content += '#'
+    content += '#'
     print("---\n")
     print(content)
     print("\n---")
