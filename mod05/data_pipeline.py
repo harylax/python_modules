@@ -82,17 +82,19 @@ class LogProcessor(DataProcessor):
 
 
 class ExportPlugin(typing.Protocol):
+    """les classes non heritieres qui
+    ont les methodes ici heritent de la classe"""
     def process_output(self, data: list[tuple[int, str]]) -> None:
         pass
 
 
-class CSVExportPlugin(ExportPlugin):
+class CSVExportPlugin:
     def process_output(self, data: list[tuple[int, str]]) -> None:
         print("CSV Output:")
         print(f"{','.join(d[1] for d in data)}")
 
 
-class JSONExportPlugin(ExportPlugin):
+class JSONExportPlugin:
     def process_output(self, data: list[tuple[int, str]]) -> None:
         print("JSON Output:")
         # items = {}
