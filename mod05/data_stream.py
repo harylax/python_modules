@@ -18,6 +18,8 @@ class DataProcessor(abc.ABC):
         pass
 
     def output(self) -> tuple[int, str]:
+        if not self._storage:
+            raise IndexError("No data in storage")
         rank = self._rank
         value = self._storage.pop(0)
         self._rank += 1
@@ -27,8 +29,8 @@ class DataProcessor(abc.ABC):
 class NumericProcessor(DataProcessor):
     def validate(self, data: typing.Any) -> bool:
         if isinstance(data, list):
-            return all(isinstance(d, int | float) for d in data)
-        return isinstance(data, int | float)
+            return all(isinstance(d, (int, float)) for d in data)
+        return isinstance(data, (int, float))
 
     def ingest(self, data: int | float | list[int | float]) -> None:
         if not self.validate(data):
@@ -63,10 +65,8 @@ class LogProcessor(DataProcessor):
                 return False
             if set(dic.keys()) != {'log_level', 'log_message'}:
                 return False
-            for v in dic.values():
-                if not isinstance(v, str):
-                    return False
-            return True
+            return all(isinstance(v, str) for v in dic.values())
+
         if isinstance(data, list):
             return all(valid_dict(d) for d in data)
         return valid_dict(data)
@@ -113,7 +113,7 @@ class DataStream:
                     )
 
     def print_processors_stats(self) -> None:
-        print("== DataStream statisctics ==")
+        print("== DataStream statistics ==")
         if not self._processors:
             print("No processor found, no data")
             return
@@ -132,7 +132,11 @@ class DataStream:
 
 def consume_elements(proc: DataProcessor, nb: int) -> None:
     for _ in range(nb):
-        proc.output()
+        try:
+            proc.output()
+        except IndexError:
+            print(f" No more element to consume in {proc.__class__.__name__}")
+            return
 
 
 def main() -> None:
@@ -182,7 +186,7 @@ def main() -> None:
         )
     consume_elements(np, 3)
     consume_elements(tp, 2)
-    consume_elements(lp, 1)
+    consume_elements(lp, 10)
     ds.print_processors_stats()
 
 
