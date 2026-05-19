@@ -6,7 +6,7 @@ import abc
 
 class DataProcessor(abc.ABC):
     def __init__(self) -> None:
-        self._stack: list[str] = []
+        self._storage: list[str] = []
         self._rank: int = 0
 
     @abc.abstractmethod
@@ -18,8 +18,10 @@ class DataProcessor(abc.ABC):
         pass
 
     def output(self) -> tuple[int, str]:
+        if not self._storage:
+            raise IndexError("No data in storage")
         rank = self._rank
-        value = self._stack.pop(0)
+        value = self._storage.pop(0)
         self._rank += 1
         return rank, value
 
@@ -27,17 +29,17 @@ class DataProcessor(abc.ABC):
 class NumericProcessor(DataProcessor):
     def validate(self, data: typing.Any) -> bool:
         if isinstance(data, list):
-            return all(isinstance(d, int | float) for d in data)
-        return isinstance(data, int | float)
+            return all(isinstance(d, (int, float)) for d in data)
+        return isinstance(data, (int, float))
 
     def ingest(self, data: int | float | list[int | float]) -> None:
         if not self.validate(data):
             raise Exception("Improper numeric data")
         if isinstance(data, list):
             for d in data:
-                self._stack.append(str(d))
+                self._storage.append(str(d))
         else:
-            self._stack.append(str(data))
+            self._storage.append(str(data))
 
 
 class TextProcessor(DataProcessor):
@@ -51,9 +53,9 @@ class TextProcessor(DataProcessor):
             raise Exception("Improper text data")
         if isinstance(data, list):
             for d in data:
-                self._stack.append(d)
+                self._storage.append(d)
         else:
-            self._stack.append(data)
+            self._storage.append(data)
 
 
 class LogProcessor(DataProcessor):
@@ -63,10 +65,8 @@ class LogProcessor(DataProcessor):
                 return False
             if set(dic.keys()) != {'log_level', 'log_message'}:
                 return False
-            for v in dic.values():
-                if not isinstance(v, str):
-                    return False
-            return True
+            return all(isinstance(v, str) for v in dic.values())
+
         if isinstance(data, list):
             return all(valid_dict(d) for d in data)
         return valid_dict(data)
@@ -76,9 +76,9 @@ class LogProcessor(DataProcessor):
             raise Exception("Improper log data")
         if isinstance(data, list):
             for d in data:
-                self._stack.append(f"{d['log_level']}: {d['log_message']}")
+                self._storage.append(f"{d['log_level']}: {d['log_message']}")
         else:
-            self._stack.append(f"{data['log_level']}: {data['log_message']}")
+            self._storage.append(f"{data['log_level']}: {data['log_message']}")
 
 
 def test_validate(proc: DataProcessor, data: typing.Any) -> None:
@@ -86,8 +86,6 @@ def test_validate(proc: DataProcessor, data: typing.Any) -> None:
 
 
 def test_ingest(proc: DataProcessor, data: typing.Any) -> None:
-    # type_global = str(type(data)).split(' ')
-    # type_name = type_global[1].strip("'>")
     type_name = str(type(data).__name__)
     if type_name == 'str':
         type_name = 'string'
@@ -131,7 +129,8 @@ def process_data(
         return
     print(f" Processing data: {data}")
     proc.ingest(data)
-    print(f" Extracting {nb_extract} values...")
+    label = "value" if nb_extract == 1 else "values"
+    print(f" Extracting {nb_extract} {label}...")
     for _ in range(nb_extract):
         rank, value = proc.output()
         print(f" {data_type(data)} {rank}: {value}")
@@ -179,4 +178,4 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as err:
-        print(f"Unexpected error: {err}")
+        print(f" Unexpected error: {err}")
