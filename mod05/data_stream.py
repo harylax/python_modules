@@ -135,7 +135,7 @@ def consume_elements(proc: DataProcessor, nb: int) -> None:
         try:
             proc.output()
         except IndexError:
-            print(f" No more element to consume in {proc.__class__.__name__}")
+            print(f"No more element to consume in {proc.__class__.__name__}")
             return
 
 
