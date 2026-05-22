@@ -1,4 +1,4 @@
-from ex0.creature_factory import CreatureFactory, FlameFactory, AquaFactory
+from ex0 import CreatureFactory, FlameFactory, AquaFactory
 
 
 def test_factory(factory: CreatureFactory) -> None:
@@ -24,9 +24,9 @@ def test_battle(factory1: CreatureFactory, factory2: CreatureFactory) -> None:
 
 
 if __name__ == "__main__":
-    flame_factory = FlameFactory()
-    aqua_factory = AquaFactory()
     try:
+        flame_factory = FlameFactory()
+        aqua_factory = AquaFactory()
         test_factory(flame_factory)
         print()
         test_factory(aqua_factory)
