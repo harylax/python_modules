@@ -1,4 +1,4 @@
-from .elements import create_air, create_earth
+from alchemy.elements import create_air, create_earth
 from elements import create_fire, create_water
 
 
