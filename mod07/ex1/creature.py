@@ -1,0 +1,78 @@
+from abc import ABC, abstractmethod
+from ex1.capabilities import HealCapability, TransformCapability
+
+
+class Creature(ABC):
+    def __init__(self) -> None:
+        self.name: str = "Unknown"
+        self.type: str = "Standard"
+
+    @abstractmethod
+    def attack(self) -> str:
+        pass
+
+    def describe(self) -> None:
+        print(f"{self.name} is a {self.type} type Creature")
+
+
+class Sproutling(Creature, HealCapability):
+    def __init__(self) -> None:
+        self.name = "Sproutling"
+        self.type = "Grass"
+
+    def attack(self) -> str:
+        return f"{self.name} uses Vine Whip!"
+
+    def heal(self) -> str:
+        return "heals itself for a small amount"
+
+
+class Bloomelle(Creature, HealCapability):
+    def __init__(self) -> None:
+        self.name = "Bloomelle"
+        self.name = "Grass/Fairy"
+
+    def attack(self) -> str:
+        return f"{self.name} uses Petal Dance!"
+
+    def heal(self) -> str:
+        return "heals itself and others for a large amount"
+
+
+class Shiftling(Creature, TransformCapability):
+    def __init__(self) -> None:
+        TransformCapability.__init__(self)
+        self.name = "Shiftling"
+        self.type = "Normal"
+
+    def attack(self) -> str:
+        if self.status:
+            return f"{self.name} performs a boosted strike!"
+        return f"{self.name} attacks normally."
+
+    def transform(self) -> str:
+        self.status = True
+        return f"{self.name} shifts into a sharper form!"
+
+    def revert(self) -> str:
+        self.status = False
+        return f"{self.name} returns to normal."
+
+
+class Morphagon(Creature, TransformCapability):
+    def __init__(self) -> None:
+        self.name = "Morphagon"
+        self.type = "Normal/Dragon"
+
+    def attack(self) -> str:
+        if self.status:
+            return f"{self.name} unleashes a devastating morph strike!"
+        return f"{self.name} attacks normally."
+
+    def transform(self) -> str:
+        self.status = True
+        return f"{self.name} morphs into a dragonic battle form!"
+
+    def revert(self) -> str:
+        self.status = False
+        return f"{self.name} stabilizes its form."
