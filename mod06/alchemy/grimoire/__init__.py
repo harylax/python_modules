@@ -5,4 +5,4 @@ from .light_spellbook import light_spell_record
 # --> crash du kaboom_0 aussi si non
 
 
-__all__ = ["light_spell_record", "dark_spell_record"]
+__all__ = ["light_spell_record"]
