@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from ex1.capabilities import HealCapability, TransformCapability
+from .capabilities import HealCapability, TransformCapability
 
 
 class Creature(ABC):
