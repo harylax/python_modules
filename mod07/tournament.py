@@ -1,8 +1,5 @@
-from ex0 import CreatureFactory as Ex0Factory, FlameFactory, AquaFactory
-from ex1 import (
-    CreatureFactory as Ex1Factory,
-    HealingCreatureFactory, TransformCreatureFactory
-    )
+from ex0 import CreatureFactory, FlameFactory, AquaFactory
+from ex1 import HealingCreatureFactory, TransformCreatureFactory
 from ex2 import (
     BattleStrategy,
     InvalidStrategyError,
@@ -10,8 +7,6 @@ from ex2 import (
     AggressiveStrategy,
     DefensiveStrategy
 )
-
-CreatureFactory = Ex0Factory | Ex1Factory
 
 
 def battle(opponents: list[tuple[CreatureFactory, BattleStrategy]]) -> None:
