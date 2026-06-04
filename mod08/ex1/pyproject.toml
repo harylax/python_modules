@@ -1,0 +1,22 @@
+[tool.poetry]
+package-mode = false
+
+[project]
+name = "ex1"
+version = "0.1.0"
+description = "Loading - Data analysis program"
+authors = [
+    {name = "haryandr",email = "haryandr@student.42antananarivo.mg"}
+]
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.1.0",
+    "numpy>=1.25.0",
+    "matplotlib>=3.7.2",
+    "requests>=2.31.0"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

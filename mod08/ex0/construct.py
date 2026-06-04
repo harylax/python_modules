@@ -23,6 +23,7 @@ def main() -> None:
         print("matrix_env\\Scripts\\activate # On Windows")
         print()
         print("Then run this program again.")
+
     else:
         print("\nMATRIX STATUS: Welcome to the construct")
         print()
@@ -33,8 +34,11 @@ def main() -> None:
         print("SUCCESS: You're in an isolated environment!")
         print("Safe to install packages without affecting\nthe global system.")
         print()
-        print("Package installation path:\n"
-              f"{'\n'.join(site.getsitepackages())}")
+        site_packages: str = (
+            site.getsitepackages()[0] if site.getsitepackages()
+            else "Not found"
+        )
+        print(f"Package installation path:\n{site_packages}")
 
 
 if __name__ == "__main__":
