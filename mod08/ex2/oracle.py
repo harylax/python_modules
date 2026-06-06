@@ -4,7 +4,7 @@ import os
 
 def load_env_file() -> bool:
     try:
-        from dotenv import load_dotenv
+        from dotenv import load_dotenv  # type: ignore
         load_dotenv()
         return True
     except ImportError:
