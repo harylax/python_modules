@@ -7,7 +7,6 @@ def check_dependencies() -> bool:
     dependencies: list[tuple[str, str]] = [
         ('pandas', ' Data manipulation ready'),
         ('numpy', 'Numerical computation ready'),
-        ('requests', ' Network access ready'),
         ('matplotlib', 'Visualization ready')
     ]
     count: int = 0
@@ -41,7 +40,7 @@ def main() -> None:
         installation_instructions()
         sys.exit(1)
     import numpy as np  # type: ignore
-    print("\nAnalysing Matrix data...")
+    print("\nAnalyzing Matrix data...")
     np.random.seed(42)
     data: np.ndarray = np.random.randint(0, 100, size=1000)
     import pandas as pd  # type: ignore
@@ -51,7 +50,7 @@ def main() -> None:
         'value': data
     })
     import matplotlib.pyplot as plt  # type: ignore
-    print("Generating visualization")
+    print("Generating visualization...")
     plt.figure(figsize=(10, 4))
     plt.plot(df['index'], df['value'])
     plt.title("Visualization of 1000 data points")
@@ -60,7 +59,7 @@ def main() -> None:
     print("\nAnalysis complete!")
     save_file: str = 'matrix_analysis.png'
     plt.savefig(save_file)
-    print(f"Result save to: {save_file}")
+    print(f"Results saved to: {save_file}")
 
 
 if __name__ == "__main__":
