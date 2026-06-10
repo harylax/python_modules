@@ -1,4 +1,6 @@
 from datetime import datetime
+import json
+from pathlib import Path
 
 
 try:
@@ -18,7 +20,7 @@ class SpaceStation(BaseModel):
     crew_size: int = Field(..., ge=1, le=20)
     power_level: float = Field(..., ge=0.0, le=100.0)
     oxygen_level: float = Field(..., ge=0.0, le=100.0)
-    last_maintenance: datetime  # pydantic knows str with date format
+    last_maintenance: datetime = Field(...)
     is_operational: bool = Field(default=True)
     notes: str | None = Field(default=None, max_length=200)
 
@@ -60,6 +62,34 @@ def main() -> None:
         print("Expected validation error:")
         for error in err.errors():
             print(error['msg'])
+    try:
+        json_path = Path("generated_data/space_stations.json")
+        with open(json_path) as f:
+            data_dict: dict = json.load(f)
+    except OSError as err:
+        print("\n========================================")
+        print(f"Could not load generated data: {err}")
+        print("Usage: from the root")
+        print("\tpython3 data_exporter.py")
+        print("\tpython3 ex0/space_station.py")
+        return
+    print("\n========================================")
+    print("Validation of generated data")
+    for data in data_dict:
+        try:
+            s = SpaceStation(**data)
+            print(f"\t[OK] ID:\t\t{s.station_id}")
+            print(f"\t[OK] Name:\t\t{s.name}")
+            print(f"\t[OK] Crew:\t\t{s.crew_size}")
+            print(f"\t[OK] Power:\t\t{s.power_level}")
+            print(f"\t[OK] Oxygen:\t\t{s.oxygen_level}")
+            print(f"\t[OK] Maintenance:\t\t{s.last_maintenance}")
+            print(f"\t[OK] Status:\t\t{s.is_operational}")
+            print(f"\t[OK] Notes:\t\t{s.notes}")
+            print()
+        except ValidationError as err:
+            for error in err.errors():
+                print(f"{data} validation error: {error['msg']}")
 
 
 if __name__ == "__main__":
