@@ -67,7 +67,7 @@ def main() -> None:
     )
     print("Valid contact report:")
     print(f"ID: {contact.contact_id}")
-    print(f"Type: {contact.contact_type}")
+    print(f"Type: {contact.contact_type.value}")
     print(f"Location: {contact.location}")
     print(f"Signal: {contact.signal_strength}/10")
     print(f"Duration: {contact.duration_minutes} minutes")
@@ -100,14 +100,14 @@ def main() -> None:
         print("\tpython3 data_exporter.py")
         print("\tpython3 ex0/space_station.py")
         return
-        print("\n========================================")
     print("Validation of generated data")
+    print("\n========================================")
     for data in data_dict:
         try:
             c = AlienContact(**data)
             print(f"\t[OK] ID:\t\t{c.contact_id}")
             print(f"\t[OK] Timestamp:\t\t{c.timestamp}")
-            print(f"\t[OK] Type:\t\t{c.contact_type}")
+            print(f"\t[OK] Type:\t\t{c.contact_type.value}")
             print(f"\t[OK] Location:\t\t{c.location}")
             print(f"\t[OK] Signal:\t\t{c.signal_strength}")
             print(f"\t[OK] Duration:\t\t{c.duration_minutes}")
