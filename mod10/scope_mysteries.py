@@ -1,8 +1,22 @@
+#!/usr/bin/env python3
+
+# ************************************************************************* #
+#                                                                           #
+#                                                      :::      ::::::::    #
+#  scope_mysteries.py                                :+:      :+:    :+:    #
+#                                                  +:+ +:+         +:+      #
+#  By: haryandr <haryandr@student.42antananari   +#+  +:+       +#+         #
+#                                              +#+#+#+#+#+   +#+            #
+#  Created: 2026/07/06 15:44:07 by haryandr        #+#    #+#               #
+#  Updated: 2026/07/06 16:29:57 by haryandr        ###   ########.fr        #
+#                                                                           #
+# ************************************************************************* #
+
 from collections.abc import Callable
 from typing import Any
 
 
-def mage_counter() -> Callable:
+def mage_counter() -> Callable[[], int]:
     count: int = 0
 
     def call_count() -> int:
@@ -12,7 +26,7 @@ def mage_counter() -> Callable:
     return call_count
 
 
-def spell_accumulator(initial_power: int) -> Callable:
+def spell_accumulator(initial_power: int) -> Callable[[int], int]:
     total_power: int = initial_power
 
     def accumulate(power: int) -> int:
@@ -22,22 +36,23 @@ def spell_accumulator(initial_power: int) -> Callable:
     return accumulate
 
 
-def enchantment_factory(enchantment_type: str) -> Callable:
-    def the_item(item_name: str) -> str:
+def enchantment_factory(enchantment_type: str) -> Callable[[str], str]:
+    def enchanted_item(item_name: str) -> str:
         return f"{enchantment_type} {item_name}"
-    return the_item
+    return enchanted_item
 
 
-def memory_vault() -> dict[str, Callable]:
+def memory_vault() -> dict[str, Callable[..., Any]]:
     memory: dict[Any, Any] = {}
 
     def store(key: Any, value: Any) -> None:
-        nonlocal memory
         memory[key] = value
 
-    def recall(key: Any) -> str:
-        value = memory.get(key, None)
-        return value if value else 'Memory not found'
+    def recall(key: Any) -> Any:
+        if key in memory:
+            return memory[key]
+        return "Memory not found"
+
     return {
         'store': store,
         'recall': recall
@@ -54,19 +69,20 @@ if __name__ == "__main__":
         print(f"counter_b call {i}: {counter_b()}")
 
     print("\nTesting spell accumulator...")
-    total_power = spell_accumulator(100)
-    print(f"Base {100}, add 20: {total_power(20)}")
-    print(f"Base {100}, add 30: {total_power(30)}")
+    initial_power: int = 100
+    accumulator = spell_accumulator(initial_power)
+    print(f"Base: {initial_power}, add 20: {accumulator(20)}")
+    print(f"Base: {initial_power}, add 30: {accumulator(30)}")
 
     print("\nTesting enchantment factory...")
-    enchanted_item_1 = enchantment_factory("Flaming")
-    print(enchanted_item_1("Sword"))
-    enchanted_item_2 = enchantment_factory("Frozen")
-    print(enchanted_item_2("Shield"))
+    flaming_sword = enchantment_factory("Flaming")
+    print(flaming_sword("Sword"))
+    frozen_shield = enchantment_factory("Frozen")
+    print(flaming_sword("Shield"))
 
     print("\nTesting memory vault...")
-    memory = memory_vault()
     print("Store 'secret' = 42")
-    memory['store']('secret', 42)
-    print(f"Recall 'secret': {memory['recall']('secret')}")
-    print(f"Recall 'unknown': {memory['recall']('unknown')}")
+    vault = memory_vault()
+    vault['store']('secret', 42)
+    print(f"Recall 'secret': {vault['recall']('secret')}")
+    print(f"Recall 'unknown': {vault['recall']('unknown')}")

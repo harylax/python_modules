@@ -1,67 +1,85 @@
+#!/usr/bin/env python3
+
+# ************************************************************************* #
+#                                                                           #
+#                                                      :::      ::::::::    #
+#  higher_magic.py                                   :+:      :+:    :+:    #
+#                                                  +:+ +:+         +:+      #
+#  By: haryandr <haryandr@student.42antananari   +#+  +:+       +#+         #
+#                                              +#+#+#+#+#+   +#+            #
+#  Created: 2026/07/06 13:25:56 by haryandr        #+#    #+#               #
+#  Updated: 2026/07/06 15:28:28 by haryandr        ###   ########.fr        #
+#                                                                           #
+# ************************************************************************* #
+
 from collections.abc import Callable
 
 
-def shield(target: str, power: int) -> str:
-    return f"Shield protects {target} for {power} HP"
-
-
-def flash(target: str, power: int) -> str:
-    return f"Flash hits {target} for {power} HP"
-
-
-def fireball(target: str, power: int) -> str:
-    return f"Fireball hits {target} for {power} HP"
-
-
-def heal(target: str, power: int) -> str:
-    return f"Heal restores {target} for {power} HP"
-
-
-def spell_combiner(spell1: Callable, spell2: Callable) -> Callable:
-    def combined(target: str, power: int) -> tuple[str, str]:
+def spell_combiner(
+        spell1: Callable[[str, int], str],
+        spell2: Callable[[str, int], str]
+        ) -> Callable[[str, int], tuple[str, str]]:
+    def combined_spell(target: str, power: int) -> tuple[str, str]:
         return (spell1(target, power), spell2(target, power))
-    return combined
+    return combined_spell
 
 
-def power_amplifier(base_spell: Callable, multiplier: int) -> Callable:
-    def amplified_spell(target: str, power: int) -> str:
+def power_amplifier(
+        base_spell: Callable[[str, int], str],
+        multiplier: int) -> Callable[[str, int], str]:
+    def mega_spell(target: str, power: int) -> str:
         return base_spell(target, power * multiplier)
-    return amplified_spell
+    return mega_spell
 
 
-def conditional_caster(condition: Callable, spell: Callable) -> Callable:
+def conditional_caster(
+        condition: Callable[[int], bool],
+        spell: Callable[[str, int], str]) -> Callable[[str, int], str]:
     def new_spell(target: str, power: int) -> str:
-        return (
-            'Spell fizzled'
-            if 'Dragon' in condition(target, power)
-            else spell(target, power)
-        )
+        if condition(power):
+            return spell(target, power)
+        return "Spell fizzled"
     return new_spell
 
 
-def spell_sequence(spells: list[Callable]) -> Callable:
-    def cast_spells(target: str, power: int) -> list[str]:
+def spell_sequence(
+        spells: list[Callable[[str, int], str]]
+        ) -> Callable[[str, int], list[str]]:
+    def cast_all(target: str, power: int) -> list[str]:
         return [spell(target, power) for spell in spells]
-    return cast_spells
+    return cast_all
 
 
 if __name__ == "__main__":
+    def heal(target: str, power: int) -> str:
+        return f"Heal restores {target} for {power} HP"
+
+    def fireball(target: str, power: int) -> str:
+        return f"Fireball hits {target} for {power} HP"
+
+    def shield(target: str, power: int) -> str:
+        return f"Shield protects {target} for {power} HP"
+
+    def blizzard(target: str, power: int) -> str:
+        return f"Blizzard hits {target} for {power} HP"
+
     print("\nTesting spell combiner...")
-    combined = spell_combiner(fireball, heal)
-    print(f"Combined spell result: {' - '.join(combined("Dragon", 19))}")
+    combined = spell_combiner(heal, fireball)
+    print(combined('Goblin', 36))
 
     print("\nTesting power amplifier...")
     mega_fireball = power_amplifier(fireball, 3)
-    print(
-        f"Original: {fireball("Goblin", 10)}, "
-        f"Amplified: {mega_fireball("Goblin", 10)}"
-        )
+    print(f"Original: {fireball('Knight', 10)},")
+    print(f"Amplified: {mega_fireball('Knight', 10)}")
 
-    print("\nTesting conditionalcaster...")
-    conditional = conditional_caster(shield, flash)
-    print(f"Condition is True: {conditional("Knight", 9)}")
-    print(f"Condition fails: {conditional("Dragon", 100)}")
+    print("\nTesting conditional caster...")
 
-    print("\nTesting spell sequence...")
-    sequence = spell_sequence([heal, shield, fireball, flash])
-    print(f"List of all spell results: {' - '.join(sequence("Wizard", 12))}")
+    def condition(power: int) -> bool:
+        return power >= 3
+    dependant_spell = conditional_caster(condition, blizzard)
+    print(f"Condition satisfied: {dependant_spell('Goblin', 52)}")
+    print(f"Condition not satisfied: {dependant_spell('Dragon', 2)}")
+
+    print("\nTesting spell_sequence...")
+    sequence = spell_sequence([heal, fireball, shield, blizzard])
+    print(sequence('Wizard', 20))
