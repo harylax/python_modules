@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
 
-# ************************************************************************* #
-#                                                                           #
-#                                                      :::      ::::::::    #
-#  functools_artifacts.py                            :+:      :+:    :+:    #
-#                                                  +:+ +:+         +:+      #
-#  By: haryandr <haryandr@student.42antananari   +#+  +:+       +#+         #
-#                                              +#+#+#+#+#+   +#+            #
-#  Created: 2026/07/07 13:26:47 by haryandr        #+#    #+#               #
-#  Updated: 2026/07/07 14:52:08 by haryandr        ###   ########.fr        #
-#                                                                           #
-# ************************************************************************* #
-
 from collections.abc import Callable
 from typing import Any
 from functools import reduce, partial, lru_cache, singledispatch
@@ -21,7 +9,7 @@ from operator import add, mul
 def spell_reducer(spells: list[int], operation: str) -> int:
     if not spells:
         return 0
-    operator: Callable[..., int]
+    operator: Callable[..., int] | None = None
     if operation == 'add':
         operator = add
     elif operation == 'multiply':

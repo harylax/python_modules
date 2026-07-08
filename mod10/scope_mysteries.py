@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
 
-# ************************************************************************* #
-#                                                                           #
-#                                                      :::      ::::::::    #
-#  scope_mysteries.py                                :+:      :+:    :+:    #
-#                                                  +:+ +:+         +:+      #
-#  By: haryandr <haryandr@student.42antananari   +#+  +:+       +#+         #
-#                                              +#+#+#+#+#+   +#+            #
-#  Created: 2026/07/06 15:44:07 by haryandr        #+#    #+#               #
-#  Updated: 2026/07/06 16:29:57 by haryandr        ###   ########.fr        #
-#                                                                           #
-# ************************************************************************* #
-
 from collections.abc import Callable
 from typing import Any
 
