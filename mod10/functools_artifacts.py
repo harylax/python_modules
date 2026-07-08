@@ -44,7 +44,7 @@ def memoized_fibonacci(n: int) -> int:
 
 def spell_dispatcher() -> Callable[[Any], str]:
     @singledispatch
-    def dispatcher(spell: Any) -> str:
+    def dispatcher(_: Any) -> str:
         return "Unknown spell type"
 
     @dispatcher.register(int)
